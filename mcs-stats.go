@@ -6,6 +6,7 @@ import (
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
 	"github.com/zenazn/goji/web/middleware"
+	"encoding/json"
 	"math/rand"
 	"net/http"
 	"time"
@@ -33,11 +34,26 @@ func main() {
 	goji.Use(middleware.EnvInit)
 	goji.Use(middleware.Recoverer)
 
-	goji.Post("/api/pings", pingHandler)
+	goji.Post("/api/pings", HandlePing)
 
 	// Static Files
 	goji.Get("/*", http.StripPrefix("/", http.FileServer(http.Dir(config.StaticLocation))))
 
 	// Serve using the magic of Goji!
 	goji.Serve()
+}
+
+func HandlePing(c web.C, w http.Responsewriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	ping := &Ping{}
+	err := decoder.Decode(ping)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write("Malformed Body")
+		return
+	}
+	ping.Timestamp = time.Now()
+	ping.NextPing = time.Now().Add(15*time.Minute)
+	// Begin validation of different fields.
+	if ping.Timestamp
 }
