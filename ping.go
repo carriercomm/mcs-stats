@@ -8,7 +8,7 @@ type Ping struct {
 	ID int `db:"ping_id"`
 	Timestamp time.Time `db:"ping_time"`
 	NextPing time.Time `db:"next_ping"`
-	SubmitterIP IPTYPE `db:"submitter_ip"`
+	SubmitterIP string `db:"submitter_ip"`
 	ServerID UUID.uuid `db:"server_id"`
 	ServerVersion string `db:"server_version"`
 	OSName string `db:"os_name"`
